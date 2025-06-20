@@ -113,13 +113,13 @@ def detail(question_id):  # 글 상세보기
     cursor = db.cursor()
     cursor.execute(
         'SELECT q.*, u.username FROM question q JOIN user u ON q.user_id = u.id WHERE q.id = %s',
-        (question_id,)
+        (question_id)
     )
     question = cursor.fetchone()  # 질문 하나만 가져옴
 
     cursor.execute(
         'SELECT a.*, u.username FROM answer a JOIN user u ON a.user_id = u.id WHERE a.question_id = %s',
-        (question_id,)
+        (question_id)
     )
     answers = cursor.fetchall()  # 답변(댓글)은 여러 개 가져옴
 
@@ -132,7 +132,7 @@ def detail(question_id):  # 글 상세보기
         db.commit()
         # 댓글 작성 후 알림창을 띄우고, 현재 글 상세 페이지로 이동
         return '''<script>alert("댓글이 등록되었습니다."); window.location="/question/%d";</script>''' % question_id
-
+    
     return render_template('detail.html', question=question, answers=answers, session=session)
 
 
@@ -140,22 +140,22 @@ def detail(question_id):  # 글 상세보기
 def edit_question(question_id):  # 글 수정
     if 'user_id' not in session:
         return redirect(url_for('login'))
-
+    
     db = get_db()
     cursor = db.cursor()
-    cursor.execute('SELECT * FROM question WHERE id = %s', (question_id,))
+    cursor.execute('SELECT * FROM question WHERE id = %s', (question_id))
     question = cursor.fetchone()
 
     if question['user_id'] != session['user_id']:  # 작성자 본인인지 확인
         return '수정 권한이 없습니다.', 403
-
+    
     if request.method == 'POST':
         title = request.form['title']
         content = request.form['content']
         cursor.execute('UPDATE question SET title = %s, content = %s WHERE id = %s', (title, content, question_id))
         db.commit()
         return redirect(url_for('detail', question_id=question_id))
-
+    
     return render_template('edit.html', question=question)
 
 
@@ -166,13 +166,13 @@ def delete_question(question_id):  # 글 삭제
 
     db = get_db()
     cursor = db.cursor()
-    cursor.execute('SELECT * FROM question WHERE id = %s', (question_id,))
+    cursor.execute('SELECT * FROM question WHERE id = %s', (question_id))
     question = cursor.fetchone()
 
     if question['user_id'] != session['user_id']:  # 작성자 본인인지 확인
         return '삭제 권한이 없습니다.', 403
 
-    cursor.execute('DELETE FROM question WHERE id = %s', (question_id,))
+    cursor.execute('DELETE FROM question WHERE id = %s', (question_id))
     db.commit()
     return '''<script>alert("질문이 삭제되었습니다."); window.location="/";</script>'''
 
@@ -184,13 +184,13 @@ def delete_answer(answer_id):  # 댓글 삭제
 
     db = get_db()
     cursor = db.cursor()
-    cursor.execute('SELECT * FROM answer WHERE id = %s', (answer_id,))
+    cursor.execute('SELECT * FROM answer WHERE id = %s', (answer_id))
     answer = cursor.fetchone()
 
     if answer['user_id'] != session['user_id']:  # 작성자 본인인지 확인
         return '댓글 삭제 권한이 없습니다.', 403
 
-    cursor.execute('DELETE FROM answer WHERE id = %s', (answer_id,))
+    cursor.execute('DELETE FROM answer WHERE id = %s', (answer_id))
     db.commit()
     return '''<script>alert("댓글이 삭제되었습니다."); window.location="/question/%d";</script>''' % answer['question_id']
 
@@ -202,7 +202,7 @@ def edit_answer(answer_id):  # 댓글 수정
 
     db = get_db()
     cursor = db.cursor()
-    cursor.execute('SELECT * FROM answer WHERE id = %s', (answer_id,))
+    cursor.execute('SELECT * FROM answer WHERE id = %s', (answer_id))
     answer = cursor.fetchone()
 
     if answer['user_id'] != session['user_id']:

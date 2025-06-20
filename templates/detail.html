@@ -7,15 +7,18 @@
     <p>{{ question.content }}</p>
     <p>작성자: {{ question.username }} | 작성일: {{ question.create_date }}</p>
     <hr>
+
+    <!-- 글 수정/삭제 링크 -->
     {% if session.user_id == question.user_id %}
     <p>
         <a href="{{ url_for('edit_question', question_id=question.id) }}">[수정]</a>
         <a href="{{ url_for('delete_question', question_id=question.id) }}" onclick="return confirm('정말 삭제하시겠습니까?');">[삭제]</a>
     </p>
-{% endif %}
+    {% endif %}
 
 
     <h3>댓글</h3>
+    <!-- 댓글 목록 출력 -->
     {% for answer in answers %}
         <div>
             <p>{{ answer.content }}</p>
@@ -28,7 +31,7 @@
         </div>
     {% endfor %}
 
-
+    <!-- 댓글 작성 폼 -->
     {% if session.username %}
     <h4>댓글 작성</h4>
     <form method="post">
