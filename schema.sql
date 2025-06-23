@@ -1,6 +1,14 @@
 DROP TABLE IF EXISTS answer;
 DROP TABLE IF EXISTS question;
 DROP TABLE IF EXISTS user;
+DROP TABLE IF EXISTS board;
+
+CREATE TABLE board (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    description TEXT,
+    create_date DATETIME NOT NULL
+);
 
 CREATE TABLE user (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -14,7 +22,9 @@ CREATE TABLE question (
     content TEXT NOT NULL,
     create_date DATETIME NOT NULL,
     user_id INT NOT NULL,
-    FOREIGN KEY (user_id) REFERENCES user (id)
+    board_id INT NOT NULL,
+    FOREIGN KEY (user_id) REFERENCES user(id),
+    FOREIGN KEY (board_id) REFERENCES board(id)
 );
 
 CREATE TABLE answer (
@@ -23,6 +33,6 @@ CREATE TABLE answer (
     create_date DATETIME NOT NULL,
     user_id INT NOT NULL,
     question_id INT NOT NULL,
-    FOREIGN KEY (user_id) REFERENCES user (id),
-    FOREIGN KEY (question_id) REFERENCES question (id)
+    FOREIGN KEY (user_id) REFERENCES user(id),
+    FOREIGN KEY (question_id) REFERENCES question(id)
 );
